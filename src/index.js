@@ -1,75 +1,63 @@
 import './sass/main.scss';
-const days = document.querySelector('[data-value="days"]');
-const hours = document.querySelector('[data-value="hours"]')
-const mins = document.querySelector('[data-value="mins"]');
-const secs = document.querySelector('[data-value="secs"]');
-const timeContainer = document.querySelector('.timer');
 
 
-// new CountdownTimer({
-//   selector: '#timer-1',
-//   targetDate: new Date('Jul 17, 2019'),
-// });
+class CountdownTimer{
 
-
-const timer = {
+  constructor({ selector, targetDate }) {
+    this.selector = selector;
+    this.targetDate = targetDate;
+    this.timeContainer = document.querySelector(this.selector);
+    this.timerList = this.timeContainer.children;
+    this.days = this.timerList[0].firstElementChild;
+    this.hours = this.timerList[1].firstElementChild;
+    this.mins = this.timerList[2].firstElementChild;
+    this.secs = this.timerList[3].firstElementChild;
+  
+    this.interval = null;
+    this.start();
+   }
   start() {
-    
-    const startTime = new Date("Sep 5, 2021 15:37:25");
-    const interval=setInterval(() => {
+
+    this.interval=setInterval(() => {
       const currentTime = Date.now();
-      const time = startTime - currentTime;
-      days.innerHTML = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-
-       hours.innerHTML = pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-      
-       mins.innerHTML =pad( Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-      secs.innerHTML = pad(Math.floor((time % (1000 * 60)) / 1000));
-
-       if (time < 0) {
-        clearInterval(interval);
-        timeContainer.innerHTML = "TIME EXPIRED";
-    }
-    
-
-
+      const time = this.targetDate - currentTime;
+      this.getTimeComponent(time);
+      this.stop(time);
     }, 1000);
-  },
-};
 
 
-console.log(timer.start());
+  }
+  getTimeComponent(time) {
+ 
+    this.days.innerHTML = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
+    this.hours.innerHTML = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    this.mins.innerHTML = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+    this.secs.innerHTML = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+   }
 
+  stop(time) {
+    if (time < 0) {
+      
+      clearInterval(this.interval);
+      this.timeContainer.innerHTML = "TIME EXPIRED";
+    }
+  }
 
-
-
-function pad(value) {
-  return String(value).padStart(2,'0');
+  pad(value) {
+ return  String(value).padStart(2,'0');
+  }
   
 }
 
-// /*
-//  * Оставшиеся дни: делим значение UTC на 1000 * 60 * 60 * 24, количество
-//  * миллисекунд в одном дне (миллисекунды * секунды * минуты * часы)
-//  */
-// const days = Math.floor(time / (1000 * 60 * 60 * 24));
+ console.log(new CountdownTimer({
+  selector: '#timer-1',
+  targetDate: new Date('Jul 17, 2021'),
+ }));
 
-// /*
-//  * Оставшиеся часы: получаем остаток от предыдущего расчета с помощью оператора
-//  * остатка % и делим его на количество миллисекунд в одном часе
-//  * (1000 * 60 * 60 = миллисекунды * минуты * секунды)
-//  */
-// const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+ 
 
-// /*
-//  * Оставшиеся минуты: получаем оставшиеся минуты и делим их на количество
-//  * миллисекунд в одной минуте (1000 * 60 = миллисекунды * секунды)
-//  */
-// const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
 
-// /*
-//  * Оставшиеся секунды: получаем оставшиеся секунды и делим их на количество
-//  * миллисекунд в одной секунде (1000)
-//  */
-// const secs = Math.floor((time % (1000 * 60)) / 1000);
+
+
+
 
